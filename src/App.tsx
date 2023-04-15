@@ -3,12 +3,17 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Layout } from './pages/layout';
 import { Login } from './pages/login';
 import { Chat } from './pages/chat';
+import { Dashboard } from './pages/dashboard';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
+      {
+        path: '/',
+        element: <Dashboard />
+      },
       {
         path: '/login',
         element: <Login />

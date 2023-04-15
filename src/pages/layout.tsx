@@ -5,7 +5,7 @@ import { auth } from "../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 export const Layout = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export const Layout = () => {
     });
 
     if (!loading) {
-      navigate(loggedIn ? '/chat' : '/login');
+      navigate(loggedIn ? '/' : '/login');
     }
     return cleanup;
   }, [loggedIn, loading]);

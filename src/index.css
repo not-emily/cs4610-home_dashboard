@@ -116,3 +116,40 @@ button {
   border-top: 1px solid black;
   margin-top: 8px;
 }
+
+.dashboard {
+  display: flex;
+  margin: 24px;
+  height: 100vh;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.widget {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  border: solid #000;
+  margin: 15px;
+  padding: 15px
+}
+
+.widget__sm {
+  flex: 1
+}
+
+.widget__md {
+  flex: 1
+}
+
+.widget__lg {
+  flex: 2
+}
+
+.widget__title {
+  font-size: 32px;
+}
