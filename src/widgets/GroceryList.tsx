@@ -1,6 +1,6 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 
@@ -8,6 +8,7 @@ type GroceryItem = {
   id: string,
   creatorId: string,
   content: string,
+  isCompleted: boolean,
 }
 
 export const GroceryList = () => {
@@ -18,6 +19,23 @@ export const GroceryList = () => {
     const [addAnother, setAddAnother] = useState(false)
     const [newContentName, setNewContentName] = useState("")
 
+    useEffect(() => {
+        loadGroceryItems();
+    }, [])
+
+    async function loadGroceryItems() {
+        const querySnapshot = await getDocs(
+            query(
+            collection(db, "grocery_items"),
+            where("creatorId", "==", user!.uid)
+            )
+        );
+        const myItems: GroceryItem[] = [];
+        querySnapshot.forEach((doc) => {
+            myItems.push({ ...doc.data(), id: doc.id } as GroceryItem);
+        });
+        setItems(myItems);
+    }
 
     async function createGroceryItem() {
         if (!content) {
@@ -25,6 +43,7 @@ export const GroceryList = () => {
         }
         const item = {
         content: content,
+        isCompleted: false,
         creatorId: user!.uid,
         }
         const docRef = await addDoc(collection(db, "grocery_items"), item);
@@ -34,7 +53,8 @@ export const GroceryList = () => {
     }
 
     async function completeGroceryItem(item: GroceryItem) {
-
+        item.isCompleted = true
+        // TODO: Delete from database, remove from state
     }
 
     return (
@@ -54,7 +74,7 @@ export const GroceryList = () => {
             {
                 flip === 0 ?
                     <div>{items.map(item => (
-                        <p key={item.id}>{item.content}</p>
+                        <p key={item.id}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
                     ))}</div>:
                 flip === 1 ?
                     <form onSubmit={(e) => {
