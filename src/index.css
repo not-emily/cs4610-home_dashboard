@@ -152,4 +152,14 @@ button {
 
 .widget__title {
   font-size: 32px;
+  flex: 5;
+}
+
+.widget__action {
+  flex: 1;
+  justify-content: right;
+}
+
+.widget__header {
+  display: flex;
 }

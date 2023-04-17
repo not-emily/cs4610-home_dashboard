@@ -1,3 +1,4 @@
+import { GroceryList } from "../widgets/GroceryList"
 
 export const Dashboard = () => {
     return (
@@ -13,7 +14,7 @@ export const Dashboard = () => {
             </div>
             <div className="col">
                 <div className="widget widget__lg">
-                    <div className="widget__title">Hello from Dashboard2</div>
+                    <GroceryList />
                 </div>
                 <div className="widget widget__sm">
                     <div className="widget__title">Hello from Dashboard2</div>
