@@ -36,7 +36,14 @@ export const TodoList = () => {
             setToast(null)
           }, 3000)
         }
-      });
+    });
+
+    // Reset after going to main view
+    useEffect(() =>{
+        if (flip === 0) {
+            setEditItemContent("")
+        }
+    }, [flip])
 
     function newToast(message: string, type: string) {
         setToast({message, type} as Toast)
