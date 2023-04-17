@@ -15,6 +15,7 @@ export const GroceryList = () => {
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<GroceryItem[]>([])
     const [content, setContent] = useState("")
+    const [addAnother, setAddAnother] = useState(false)
     const [newContentName, setNewContentName] = useState("")
 
 
@@ -30,6 +31,10 @@ export const GroceryList = () => {
 
         (item as GroceryItem).id = docRef.id;
         setItems([...items, item as GroceryItem]);
+    }
+
+    async function completeGroceryItem(item: GroceryItem) {
+
     }
 
     return (
@@ -48,16 +53,22 @@ export const GroceryList = () => {
             </div>
             {
                 flip === 0 ?
-                    <p>This is the front of the widget</p>:
+                    <div>{items.map(item => (
+                        <p key={item.id}>{item.content}</p>
+                    ))}</div>:
                 flip === 1 ?
                     <form onSubmit={(e) => {
                         if (content != null) {
                         createGroceryItem()
                         }
+                        if (!addAnother) {
+                            setFlip(0)
+                        }
                         setContent("")      // Reset text field after submission
                         e.preventDefault()
                     }}>
                         <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
+                        <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
                         <input type="submit" value="Save" />
                     </form>:
                     <></>
