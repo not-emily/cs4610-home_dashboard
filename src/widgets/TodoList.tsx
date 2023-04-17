@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { MdAdd, MdArrowBack } from "react-icons/md";
 
@@ -22,6 +22,7 @@ export const TodoList = () => {
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<TodoItem[]>([])
     const [content, setContent] = useState("")
+    const [itemIdToEdit, setItemIdToEdit] = useState("")
     const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
@@ -41,6 +42,7 @@ export const TodoList = () => {
     // Reset after going to main view
     useEffect(() =>{
         if (flip === 0) {
+            setItemIdToEdit("")
             setEditItemContent("")
         }
     }, [flip])
@@ -80,21 +82,39 @@ export const TodoList = () => {
 
     async function completeTodoItem(item: TodoItem) {
         item.isCompleted = true
-        deleteDoc(doc(db, "todo_items", item.id))
+
+        try {
+            await deleteDoc(doc(db, "todo_items", item.id))
+            newToast(`Completed ${item.content}`, "success")
+        } catch(err) {
+            alert(err)
+            newToast(`Error: Could not complete ${item.content}`, "error")
+        }
 
         const newItems = items.filter(e => e.id != item.id)
         setItems(newItems)
-
-        newToast(`Completed ${item.content}`, "success")
     }
 
     function switchToEdit(item: TodoItem) {
         setFlip(2)
+        setItemIdToEdit(item.id)
         setEditItemContent(item.content)
     }
 
-    async function editTodoItem(item: TodoItem) {
-        // TODO: Update todo item in database and in current state
+    async function editTodoItem(itemContent: string) {
+        const taskDocRef = doc(db, 'todo_items', itemIdToEdit)
+        try{
+            await updateDoc(taskDocRef, {
+            content: itemContent
+            })
+            setItems([])
+            loadTodoItems()
+            setFlip(0)
+            newToast(`Updated ${itemContent}`, "success")
+        } catch (err) {
+            alert(err)
+            newToast(`Error: Could not update ${itemContent}`, "error")
+        }   
     }
 
 
@@ -118,7 +138,10 @@ export const TodoList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}><input type="checkbox" checked={item.isCompleted} onChange={() => completeTodoItem(item)}/>{item.content}</p>
+                            <span className="checklist-item">
+                                <input type="checkbox" checked={item.isCompleted} onChange={() => completeTodoItem(item)}/>
+                                <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                            </span>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
@@ -138,7 +161,7 @@ export const TodoList = () => {
                     flip === 2 ?
                         <form onSubmit={(e) => {
                             if (editItemContent != null) {
-                                // TODO: Do something
+                                editTodoItem(editItemContent)
                             }
 
                             e.preventDefault()

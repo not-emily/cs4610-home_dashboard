@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { MdAdd, MdArrowBack } from 'react-icons/md'
 
@@ -23,6 +23,7 @@ export const GroceryList = () => {
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<GroceryItem[]>([])
     const [content, setContent] = useState("")
+    const [itemIdToEdit, setItemIdToEdit] = useState("")
     const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
@@ -38,6 +39,14 @@ export const GroceryList = () => {
           }, 3000)
         }
       });
+
+    // Reset after going to main view
+    useEffect(() =>{
+        if (flip === 0) {
+            setItemIdToEdit("")
+            setEditItemContent("")
+        }
+    }, [flip])
 
     function newToast(message: string, type: string) {
         setToast({message, type} as Toast)
@@ -84,11 +93,24 @@ export const GroceryList = () => {
 
     function switchToEdit(item: GroceryItem) {
         setFlip(2)
+        setItemIdToEdit(item.id)
         setEditItemContent(item.content)
     }
 
-    async function editTodoItem(item: GroceryItem) {
-        // TODO: Update todo item in database and in current state
+    async function editGroceryItem(itemContent: string) {
+        const taskDocRef = doc(db, 'grocery_items', itemIdToEdit)
+        try{
+            await updateDoc(taskDocRef, {
+            content: itemContent
+            })
+            setItems([])
+            loadGroceryItems()
+            setFlip(0)
+            newToast(`Updated ${itemContent}`, "success")
+        } catch (err) {
+            alert(err)
+            newToast(`Error: Could not update ${itemContent}`, "error")
+        }   
     }
 
     return (
@@ -111,7 +133,10 @@ export const GroceryList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
+                            <span className="checklist-item">
+                                <input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>
+                                <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                            </span>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
@@ -131,7 +156,7 @@ export const GroceryList = () => {
                     flip === 2 ?
                         <form onSubmit={(e) => {
                             if (editItemContent != null) {
-                                // TODO: Do something
+                                editGroceryItem(editItemContent)
                             }
 
                             e.preventDefault()
