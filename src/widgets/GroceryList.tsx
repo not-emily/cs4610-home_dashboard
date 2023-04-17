@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 
@@ -17,7 +17,6 @@ export const GroceryList = () => {
     const [items, setItems] = useState<GroceryItem[]>([])
     const [content, setContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
-    const [newContentName, setNewContentName] = useState("")
 
     useEffect(() => {
         loadGroceryItems();
@@ -55,6 +54,7 @@ export const GroceryList = () => {
     async function completeGroceryItem(item: GroceryItem) {
         item.isCompleted = true
         // TODO: Delete from database, remove from state
+        setItems([...items])
     }
 
     return (
