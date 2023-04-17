@@ -1,4 +1,5 @@
 import { GroceryList } from "../widgets/GroceryList"
+import { TodoList } from "../widgets/TodoList"
 
 export const Dashboard = () => {
     return (
@@ -9,7 +10,7 @@ export const Dashboard = () => {
                     <div className="widget__title">Hello from Dashboard1</div>
                 </div>
                 <div className="widget widget__lg">
-                    <div className="widget__title">Hello from Dashboard1</div>
+                    <TodoList />
                 </div>
             </div>
             <div className="col">
