@@ -8,12 +8,12 @@ import { getDatabase } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDdaf_TKJ4q0yptg3TWPRmb679i_CvPE04",
-  authDomain: "chat-a77e5.firebaseapp.com",
-  projectId: "chat-a77e5",
-  storageBucket: "chat-a77e5.appspot.com",
-  messagingSenderId: "473556694174",
-  appId: "1:473556694174:web:f7477c7f1ebab88810778f"
+  apiKey: "AIzaSyB9mhGhX7XmhYk2c32gGnNbLJVdwbzU2rg",
+  authDomain: "react-home-dashboard.firebaseapp.com",
+  projectId: "react-home-dashboard",
+  storageBucket: "react-home-dashboard.appspot.com",
+  messagingSenderId: "1043759629603",
+  appId: "1:1043759629603:web:e5c9b3c9e1928849f5b896"
 };
 
 // Initialize Firebase
