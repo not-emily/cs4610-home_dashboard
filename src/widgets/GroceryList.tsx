@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { MdAdd, MdArrowBack } from 'react-icons/md'
+
 
 
 type GroceryItem = {
@@ -86,9 +88,9 @@ export const GroceryList = () => {
                 <div className="widget__action">
                     {
                         flip === 0 ? 
-                            <button onClick={() => setFlip(1)}>+</button>:
+                            <button onClick={() => setFlip(1)}><MdAdd className="widget__action__icon"/></button>:
                         flip === 1 ?
-                            <button onClick={() => setFlip(0)}>Back</button>:
+                            <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                             <></>
                     }
                 </div>
@@ -97,7 +99,7 @@ export const GroceryList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <p key={item.id}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
+                            <p key={item.id} className="checklist-item"><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {

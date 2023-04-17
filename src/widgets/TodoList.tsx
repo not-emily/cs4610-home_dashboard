@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { MdAdd, MdArrowBack } from "react-icons/md";
 
 
 type TodoItem = {
@@ -21,6 +22,7 @@ export const TodoList = () => {
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<TodoItem[]>([])
     const [content, setContent] = useState("")
+    const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
 
@@ -79,6 +81,16 @@ export const TodoList = () => {
         newToast(`Completed ${item.content}`, "success")
     }
 
+    function switchToEdit(item: TodoItem) {
+        setFlip(2)
+        setEditItemContent(item.content)
+    }
+
+    async function editTodoItem(item: TodoItem) {
+        // TODO: Update todo item in database and in current state
+    }
+
+
     return (
         <>
             <div className="widget__header">
@@ -86,9 +98,11 @@ export const TodoList = () => {
                 <div className="widget__action">
                     {
                         flip === 0 ? 
-                            <button onClick={() => setFlip(1)}>+</button>:
+                            <button onClick={() => setFlip(1)}><MdAdd className="widget__action__icon"/></button>:
                         flip === 1 ?
-                            <button onClick={() => setFlip(0)}>Back</button>:
+                            <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
+                        flip === 2 ?
+                            <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                             <></>
                     }
                 </div>
@@ -97,7 +111,7 @@ export const TodoList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <p key={item.id}><input type="checkbox" checked={item.isCompleted} onChange={() => completeTodoItem(item)}/>{item.content}</p>
+                            <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}><input type="checkbox" checked={item.isCompleted} onChange={() => completeTodoItem(item)}/>{item.content}</p>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
@@ -112,6 +126,17 @@ export const TodoList = () => {
                         }}>
                             <input type="text" placeholder="Todo item..." value={content} onChange={(e) => setContent(e.target.value)} />
                             <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            <input type="submit" value="Save" />
+                        </form>:
+                    flip === 2 ?
+                        <form onSubmit={(e) => {
+                            if (editItemContent != null) {
+                                // TODO: Do something
+                            }
+
+                            e.preventDefault()
+                        }}>
+                            <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
                             <input type="submit" value="Save" />
                         </form>:
                         <></>
