@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
-import { addDoc, collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 
@@ -11,16 +11,34 @@ type GroceryItem = {
   isCompleted: boolean,
 }
 
+type Toast = {
+    message: string,
+    type: "success" | "error"
+}
+
 export const GroceryList = () => {
     const user = useContext(UserContext);
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<GroceryItem[]>([])
     const [content, setContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
+    const [toast, setToast] = useState<Toast | null>(null)
 
     useEffect(() => {
         loadGroceryItems();
     }, [])
+
+    useEffect(() => {
+        if (toast != null) {
+          setTimeout(() => {
+            setToast(null)
+          }, 3000)
+        }
+      });
+
+    function newToast(message: string, type: string) {
+        setToast({message, type} as Toast)
+    }
 
     async function loadGroceryItems() {
         const querySnapshot = await getDocs(
@@ -53,8 +71,12 @@ export const GroceryList = () => {
 
     async function completeGroceryItem(item: GroceryItem) {
         item.isCompleted = true
-        // TODO: Delete from database, remove from state
-        setItems([...items])
+        deleteDoc(doc(db, "grocery_items", item.id))
+
+        const newItems = items.filter(e => e.id != item.id)
+        setItems(newItems)
+
+        newToast(`Completed ${item.content}`, "success")
     }
 
     return (
@@ -71,28 +93,31 @@ export const GroceryList = () => {
                     }
                 </div>
             </div>
-            {
-                flip === 0 ?
-                    <div>{items.map(item => (
-                        <p key={item.id}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
-                    ))}</div>:
-                flip === 1 ?
-                    <form onSubmit={(e) => {
-                        if (content != null) {
-                        createGroceryItem()
-                        }
-                        if (!addAnother) {
-                            setFlip(0)
-                        }
-                        setContent("")      // Reset text field after submission
-                        e.preventDefault()
-                    }}>
-                        <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
-                        <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
-                        <input type="submit" value="Save" />
-                    </form>:
-                    <></>
-            }
+            <div className="widget__content">
+                {
+                    flip === 0 ?
+                        <div>{items.map(item => (
+                            <p key={item.id}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
+                        ))}</div>:
+                    flip === 1 ?
+                        <form onSubmit={(e) => {
+                            if (content != null) {
+                            createGroceryItem()
+                            }
+                            if (!addAnother) {
+                                setFlip(0)
+                            }
+                            setContent("")      // Reset text field after submission
+                            e.preventDefault()
+                        }}>
+                            <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
+                            <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            <input type="submit" value="Save" />
+                        </form>:
+                        <></>
+                }
+            </div>
+            { toast != null ? <div className={`toast toast--${toast.type}`}>{toast.message}</div> : <></> }
         </>
     )
 }

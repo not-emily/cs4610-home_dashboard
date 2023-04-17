@@ -132,6 +132,7 @@ button {
 .widget {
   display: flex;
   flex-direction: column;
+  position: relative;
   border-radius: 20px;
   border: solid #000;
   margin: 15px;
@@ -139,15 +140,15 @@ button {
 }
 
 .widget__sm {
-  flex: 1
+  height: calc(100vh / 3)
 }
 
 .widget__md {
-  flex: 1
+  height: calc(100vh / 2)
 }
 
 .widget__lg {
-  flex: 2
+  height: calc(2 * (100vh / 3))
 }
 
 .widget__title {
@@ -162,4 +163,27 @@ button {
 
 .widget__header {
   display: flex;
+}
+
+.widget__content {
+  overflow-y: auto;
+}
+
+.toast {
+  border-radius: 0px 0px 19px 19px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.toast--success {
+  background-color: #D9EAD3;
+  color: #38761D;
+}
+
+.toast--error {
+  background-color: #F4CCCC;
+  color: #990000;
 }
