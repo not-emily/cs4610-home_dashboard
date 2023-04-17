@@ -23,6 +23,7 @@ export const GroceryList = () => {
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<GroceryItem[]>([])
     const [content, setContent] = useState("")
+    const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
 
@@ -81,6 +82,15 @@ export const GroceryList = () => {
         newToast(`Completed ${item.content}`, "success")
     }
 
+    function switchToEdit(item: GroceryItem) {
+        setFlip(2)
+        setEditItemContent(item.content)
+    }
+
+    async function editTodoItem(item: GroceryItem) {
+        // TODO: Update todo item in database and in current state
+    }
+
     return (
         <>
             <div className="widget__header">
@@ -91,6 +101,8 @@ export const GroceryList = () => {
                             <button onClick={() => setFlip(1)}><MdAdd className="widget__action__icon"/></button>:
                         flip === 1 ?
                             <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
+                        flip === 2 ?
+                            <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                             <></>
                     }
                 </div>
@@ -99,7 +111,7 @@ export const GroceryList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <p key={item.id} className="checklist-item"><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
+                            <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}><input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>{item.content}</p>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
@@ -114,6 +126,17 @@ export const GroceryList = () => {
                         }}>
                             <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
                             <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            <input type="submit" value="Save" />
+                        </form>:
+                    flip === 2 ?
+                        <form onSubmit={(e) => {
+                            if (editItemContent != null) {
+                                // TODO: Do something
+                            }
+
+                            e.preventDefault()
+                        }}>
+                            <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
                             <input type="submit" value="Save" />
                         </form>:
                         <></>
