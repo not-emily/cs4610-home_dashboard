@@ -91,15 +91,14 @@ export const TodoList = () => {
             await updateDoc(taskDocRef, {
                 isCompleted: item.isCompleted
             })
-            setFlip(0)
             if (item.isCompleted) {
-                newToast(`Completed ${item.content}`, "success")
+                newToast(`Completed "${item.content}"`, "success")
             } else {
-                newToast(`Marked ${item.content} as incomplete`, "info")
+                newToast(`Marked "${item.content}" as incomplete`, "info")
             }
         } catch (err) {
             alert(err)
-            newToast(`Error: Could not update ${item.content}`, "error")
+            newToast(`Error: Could not update "${item.content}"`, "error")
         }   
 
         // try {

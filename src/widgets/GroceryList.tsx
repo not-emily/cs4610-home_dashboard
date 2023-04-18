@@ -108,10 +108,10 @@ export const GroceryList = () => {
             setItems([])
             loadGroceryItems()
             setFlip(0)
-            newToast(`Updated ${itemContent}`, "success")
+            newToast(`Updated "${itemContent}"`, "success")
         } catch (err) {
             alert(err)
-            newToast(`Error: Could not update ${itemContent}`, "error")
+            newToast(`Error: Could not update "${itemContent}"`, "error")
         }   
     }
 
