@@ -14,7 +14,7 @@ type TodoItem = {
 
 type Toast = {
     message: string,
-    type: "success" | "error"
+    type: "success" | "error" | "info"
 }
 
 export const TodoList = () => {
@@ -26,18 +26,20 @@ export const TodoList = () => {
     const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
+    const [toastTimeout, setToastTimeout] = useState<NodeJS.Timeout>()
 
     useEffect(() => {
         loadTodoItems();
     }, [])
 
     useEffect(() => {
+        clearTimeout(toastTimeout)
         if (toast != null) {
-          setTimeout(() => {
+          setToastTimeout(setTimeout(() => {
             setToast(null)
-          }, 3000)
+          }, 3000));
         }
-    });
+      }, [toast]);
 
     // Reset after going to main view
     useEffect(() =>{
@@ -80,19 +82,36 @@ export const TodoList = () => {
         setItems([...items, item as TodoItem]);
     }
 
-    async function completeTodoItem(item: TodoItem) {
-        item.isCompleted = true
+    async function toggleCompletion(item: TodoItem) {
+        item.isCompleted = !item.isCompleted
+        setItems([...items])
 
-        try {
-            await deleteDoc(doc(db, "todo_items", item.id))
-            newToast(`Completed ${item.content}`, "success")
-        } catch(err) {
+        const taskDocRef = doc(db, 'todo_items', item.id)
+        try{
+            await updateDoc(taskDocRef, {
+                isCompleted: item.isCompleted
+            })
+            setFlip(0)
+            if (item.isCompleted) {
+                newToast(`Completed ${item.content}`, "success")
+            } else {
+                newToast(`Marked ${item.content} as incomplete`, "info")
+            }
+        } catch (err) {
             alert(err)
-            newToast(`Error: Could not complete ${item.content}`, "error")
-        }
+            newToast(`Error: Could not update ${item.content}`, "error")
+        }   
 
-        const newItems = items.filter(e => e.id != item.id)
-        setItems(newItems)
+        // try {
+        //     await deleteDoc(doc(db, "todo_items", item.id))
+        //     newToast(`Completed ${item.content}`, "success")
+        // } catch(err) {
+        //     alert(err)
+        //     newToast(`Error: Could not complete ${item.content}`, "error")
+        // }
+
+        // const newItems = items.filter(e => e.id != item.id)
+        // setItems(newItems)
     }
 
     function switchToEdit(item: TodoItem) {
@@ -138,9 +157,9 @@ export const TodoList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <span className="checklist-item">
-                                <input type="checkbox" checked={item.isCompleted} onChange={() => completeTodoItem(item)}/>
-                                <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                            <span key={item.id} className="checklist-item">
+                                <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
+                                <p className={item.isCompleted ? "completed" : ""} onClick={() => {switchToEdit(item)}}>{item.content}</p>
                             </span>
                         ))}</div>:
                     flip === 1 ?

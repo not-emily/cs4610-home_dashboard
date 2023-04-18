@@ -15,7 +15,7 @@ type GroceryItem = {
 
 type Toast = {
     message: string,
-    type: "success" | "error"
+    type: "success" | "error" | "info"
 }
 
 export const GroceryList = () => {
@@ -27,18 +27,20 @@ export const GroceryList = () => {
     const [editItemContent, setEditItemContent] = useState("")
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
+    const [toastTimeout, setToastTimeout] = useState<NodeJS.Timeout>()
 
     useEffect(() => {
         loadGroceryItems();
     }, [])
 
     useEffect(() => {
+        clearTimeout(toastTimeout)
         if (toast != null) {
-          setTimeout(() => {
+          setToastTimeout(setTimeout(() => {
             setToast(null)
-          }, 3000)
+          }, 3000));
         }
-      });
+      }, [toast]);
 
     // Reset after going to main view
     useEffect(() =>{
@@ -133,9 +135,9 @@ export const GroceryList = () => {
                 {
                     flip === 0 ?
                         <div>{items.map(item => (
-                            <span className="checklist-item">
+                            <span key={item.id} className="checklist-item">
                                 <input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>
-                                <p key={item.id} className="checklist-item" onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                <p onClick={() => {switchToEdit(item)}}>{item.content}</p>
                             </span>
                         ))}</div>:
                     flip === 1 ?

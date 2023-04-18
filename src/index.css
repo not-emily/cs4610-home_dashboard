@@ -198,14 +198,29 @@ button {
   color: #990000;
 }
 
+.toast--info {
+  background-color: #CFE2F3;
+  color: #0B5394;
+}
+
 .checklist-item {
   display: flex;
-  font-size: 24px;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.checklist-item > p {
   margin-top: 0;
   margin-bottom: 0;
-  cursor: pointer;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
 }
 
 input[type="checkbox"] {
   margin-right: 10px;
+  width: 2em;
+  height: 2em;
 }
