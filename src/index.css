@@ -191,16 +191,19 @@ button {
 .toast--success {
   background-color: #D9EAD3;
   color: #38761D;
+  border-top: solid #38761D;
 }
 
 .toast--error {
   background-color: #F4CCCC;
   color: #990000;
+  border-top: solid #990000;
 }
 
 .toast--info {
   background-color: #CFE2F3;
   color: #0B5394;
+  border-top: solid #0B5394;
 }
 
 .checklist-item {
@@ -223,4 +226,32 @@ input[type="checkbox"] {
   margin-right: 10px;
   width: 2em;
   height: 2em;
+}
+
+.pet {
+  display: flex;
+  border: solid #000;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.pet.fed {
+  background-color: #D9EAD3;
+  color: #38761D;
+}
+
+.pet.unfed {
+  background-color: #F4CCCC;
+  color: #990000;
+}
+
+.pet__name {
+  flex: 5;
+  font-size: 2em;
+  margin: 0;
+}
+
+.pet_action {
+  flex: 1;
 }

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack } from 'react-icons/md'
+import { MdAdd, MdArrowBack, MdCheck } from 'react-icons/md'
 
 
 
@@ -11,6 +11,7 @@ type Pet = {
   creatorId: string,
   name: string,
   freq_hr: number,
+  was_fed: boolean
 }
 
 type Toast = {
@@ -21,7 +22,7 @@ type Toast = {
 export const PetFeedingTracker = () => {
     const user = useContext(UserContext);
     const [flip, setFlip] = useState(0)
-    const [items, setItems] = useState<Pet[]>([])
+    const [pets, setPets] = useState<Pet[]>([])
     const [petName, setPetName] = useState("")
     const [petFreq, setPetFreq] = useState(0)
     const [petIdToEdit, setPetIdToEdit] = useState("")
@@ -68,7 +69,7 @@ export const PetFeedingTracker = () => {
         querySnapshot.forEach((doc) => {
             myItems.push({ ...doc.data(), id: doc.id } as Pet);
         });
-        setItems(myItems);
+        setPets(myItems);
     }
 
     async function createPet() {
@@ -78,12 +79,13 @@ export const PetFeedingTracker = () => {
         const item = {
             name: petName,
             freq_hr: 1,
+            was_fed: false,
             creatorId: user!.uid,
         }
         const docRef = await addDoc(collection(db, "pets"), item);
 
         (item as Pet).id = docRef.id;
-        setItems([...items, item as Pet]);
+        setPets([...pets, item as Pet]);
     }
 
     // async function completeGroceryItem(item: Pet) {
@@ -96,26 +98,46 @@ export const PetFeedingTracker = () => {
     //     newToast(`Completed ${item.content}`, "success")
     // }
 
-    function switchToEdit(item: Pet) {
+    function switchToEdit(pet: Pet) {
         setFlip(2)
-        setPetIdToEdit(item.id)
-        setEditPetName(item.name)
-        setEditPetFreq(item.freq_hr)
+        setPetIdToEdit(pet.id)
+        setEditPetName(pet.name)
+        setEditPetFreq(pet.freq_hr)
     }
 
-    async function editPet(itemContent: string) {
+    async function toggleFeeding(pet: Pet) {
+        pet.was_fed = !pet.was_fed
+        setPets([...pets])
+
+        const taskDocRef = doc(db, 'pets', pet.id)
+        try{
+            await updateDoc(taskDocRef, {
+                was_fed: pet.was_fed
+            })
+            if (pet.was_fed) {
+                newToast(`Fed ${pet.name}`, "success")
+            } else {
+                newToast(`Marked ${pet.name} as unfed`, "info")
+            }
+        } catch (err) {
+            alert(err)
+            newToast(`Error: Could not update ${pet.name}`, "error")
+        }   
+    }
+
+    async function editPet(petName: string) {
         const taskDocRef = doc(db, 'pets', petIdToEdit)
         try{
             await updateDoc(taskDocRef, {
-                content: itemContent
+                name: petName
             })
-            setItems([])
+            setPets([])
             loadPets()
             setFlip(0)
-            newToast(`Updated "${itemContent}"`, "success")
+            newToast(`Updated "${petName}"`, "success")
         } catch (err) {
             alert(err)
-            newToast(`Error: Could not update "${itemContent}"`, "error")
+            newToast(`Error: Could not update "${petName}"`, "error")
         }   
     }
 
@@ -138,10 +160,11 @@ export const PetFeedingTracker = () => {
             <div className="widget__content">
                 {
                     flip === 0 ?
-                        <div>{items.map(item => (
-                            <span key={item.id} className="pet">
-                                <p onClick={() => {switchToEdit(item)}}>{item.name}</p>
-                            </span>
+                        <div>{pets.map(pet => (
+                            <div key={pet.id} className={pet.was_fed ? "pet fed" : "pet unfed"}>
+                                <p className="pet__name" onClick={() => {switchToEdit(pet)}}>{pet.name}</p>
+                                <button onClick={()=>{toggleFeeding(pet)}}><MdCheck /></button>
+                            </div>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
@@ -155,7 +178,7 @@ export const PetFeedingTracker = () => {
                             setPetFreq(0)
                             e.preventDefault()
                         }}>
-                            <input type="text" placeholder="Grocery item..." value={petName} onChange={(e) => setPetName(e.target.value)} />
+                            <input type="text" placeholder="Pet name..." value={petName} onChange={(e) => setPetName(e.target.value)} />
                             <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
                             <input type="submit" value="Save" />
                         </form>:
