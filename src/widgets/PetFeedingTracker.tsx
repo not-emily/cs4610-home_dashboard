@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack, MdCheck, MdDelete } from 'react-icons/md'
+import { MdAdd, MdArrowBack, MdCheck, MdDelete, MdMenu, MdMore, MdMoreHoriz } from 'react-icons/md'
 
 
 
@@ -182,8 +182,8 @@ export const PetFeedingTracker = () => {
                     flip === 0 ?
                         <div>{pets.map(pet => (
                             <div key={pet.id} className={pet.was_fed ? "pet fed" : "pet unfed"}>
-                                <p className="pet__name" onClick={() => {switchToEdit(pet)}}>{pet.name}</p>
-                                <button onClick={()=>{toggleFeeding(pet)}}><MdCheck /></button>
+                                <p className="pet__name" onClick={() => {toggleFeeding(pet)}}>{pet.name}</p>
+                                <button className="pet__action" onClick={()=>{switchToEdit(pet)}}><MdMoreHoriz /></button>
                             </div>
                         ))}</div>:
                     flip === 1 ?
