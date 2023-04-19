@@ -191,7 +191,7 @@ export const PetFeedingTracker = () => {
                             </div>
                         ))}</div>:
                     flip === 1 ?
-                        <div className="flip1">
+                        <div className="flip">
                             <form onSubmit={(e) => {
                                 if (petName != null) {
                                     createPet()
@@ -209,7 +209,7 @@ export const PetFeedingTracker = () => {
                             </form>
                         </div>:
                     flip === 2 ?
-                        <>
+                        <div className="flip">
                             <form onSubmit={(e) => {
                                 if (editPetName != null) {
                                     editPet(editPetName)
@@ -219,10 +219,10 @@ export const PetFeedingTracker = () => {
                             }}>
                                 <input type="text" value={editPetName} onChange={(e) => setEditPetName(e.target.value)} />
                                 <input type="submit" value="Save" />
+                                <p><button onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button></p>
                             </form>
-                            <button onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button>
                         
-                        </>:
+                        </div>:
                         <></>
                 }
             </div>

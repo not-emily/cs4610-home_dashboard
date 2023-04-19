@@ -180,7 +180,7 @@ button {
   position: relative;
 }
 
-.flip1 {
+.flip {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -273,4 +273,9 @@ input[type="checkbox"] {
 .pet__action {
   flex: 1;
   margin: 10px;
+}
+
+.pet__action > svg {
+  width: 1.5em;
+  height: 1.5em;
 }

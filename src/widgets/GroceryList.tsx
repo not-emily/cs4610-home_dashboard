@@ -141,7 +141,7 @@ export const GroceryList = () => {
                             </span>
                         ))}</div>:
                     flip === 1 ?
-                        <div className="flip1">
+                        <div className="flip">
                             <form onSubmit={(e) => {
                                 if (content != null) {
                                 createGroceryItem()
@@ -158,16 +158,18 @@ export const GroceryList = () => {
                             </form>
                         </div>:
                     flip === 2 ?
-                        <form onSubmit={(e) => {
-                            if (editItemContent != null) {
-                                editGroceryItem(editItemContent)
-                            }
+                        <div className="flip">
+                            <form onSubmit={(e) => {
+                                if (editItemContent != null) {
+                                    editGroceryItem(editItemContent)
+                                }
 
-                            e.preventDefault()
-                        }}>
-                            <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
-                            <input type="submit" value="Save" />
-                        </form>:
+                                e.preventDefault()
+                            }}>
+                                <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
+                                <input type="submit" value="Save" />
+                            </form>
+                        </div>:
                         <></>
                 }
             </div>
