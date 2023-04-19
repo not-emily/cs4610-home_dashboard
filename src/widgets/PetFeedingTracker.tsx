@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack, MdCheck } from 'react-icons/md'
+import { MdAdd, MdArrowBack, MdCheck, MdDelete } from 'react-icons/md'
 
 
 
@@ -141,6 +141,26 @@ export const PetFeedingTracker = () => {
         }   
     }
 
+    function confirmDelete(petId: string, petName: string) {
+        const result = confirm(`Are you sure you want to delete ${petName}?`)
+        if (result) {
+          deletePet(petId);
+        }
+      }
+
+    async function deletePet(petId: string) {
+        deleteDoc(doc(db, "pets", petId))
+
+        const newPets = pets.filter(e => e.id != petId)
+        setPets(newPets)
+
+        newToast(`Deleted ${editPetName}`, "success")
+
+        setEditPetName("")
+        setPetIdToEdit("")
+        setFlip(0)
+    }
+
     return (
         <>
             <div className="widget__header">
@@ -183,16 +203,20 @@ export const PetFeedingTracker = () => {
                             <input type="submit" value="Save" />
                         </form>:
                     flip === 2 ?
-                        <form onSubmit={(e) => {
-                            if (editPetName != null) {
-                                editPet(editPetName)
-                            }
+                        <>
+                            <form onSubmit={(e) => {
+                                if (editPetName != null) {
+                                    editPet(editPetName)
+                                }
 
-                            e.preventDefault()
-                        }}>
-                            <input type="text" value={editPetName} onChange={(e) => setEditPetName(e.target.value)} />
-                            <input type="submit" value="Save" />
-                        </form>:
+                                e.preventDefault()
+                            }}>
+                                <input type="text" value={editPetName} onChange={(e) => setEditPetName(e.target.value)} />
+                                <input type="submit" value="Save" />
+                            </form>
+                            <button onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button>
+                        
+                        </>:
                         <></>
                 }
             </div>
