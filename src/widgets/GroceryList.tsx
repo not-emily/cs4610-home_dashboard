@@ -141,20 +141,22 @@ export const GroceryList = () => {
                             </span>
                         ))}</div>:
                     flip === 1 ?
-                        <form onSubmit={(e) => {
-                            if (content != null) {
-                            createGroceryItem()
-                            }
-                            if (!addAnother) {
-                                setFlip(0)
-                            }
-                            setContent("")      // Reset text field after submission
-                            e.preventDefault()
-                        }}>
-                            <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
-                            <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
-                            <input type="submit" value="Save" />
-                        </form>:
+                        <div className="flip1">
+                            <form onSubmit={(e) => {
+                                if (content != null) {
+                                createGroceryItem()
+                                }
+                                if (!addAnother) {
+                                    setFlip(0)
+                                }
+                                setContent("")      // Reset text field after submission
+                                e.preventDefault()
+                            }}>
+                                <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
+                                <input type="submit" value="Save" />
+                                <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            </form>
+                        </div>:
                     flip === 2 ?
                         <form onSubmit={(e) => {
                             if (editItemContent != null) {

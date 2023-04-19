@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack, MdCheck, MdDelete, MdMenu, MdMore, MdMoreHoriz } from 'react-icons/md'
+import { MdAdd, MdArrowBack, MdCheck, MdDelete, MdEdit, MdMenu, MdMore, MdMoreHoriz } from 'react-icons/md'
 
 
 
@@ -149,16 +149,20 @@ export const PetFeedingTracker = () => {
       }
 
     async function deletePet(petId: string) {
-        deleteDoc(doc(db, "pets", petId))
+        try {
+            await deleteDoc(doc(db, "pets", petId))
+            newToast(`Deleted ${editPetName}`, "success")
 
-        const newPets = pets.filter(e => e.id != petId)
-        setPets(newPets)
+            const newPets = pets.filter(e => e.id != petId)
+            setPets(newPets)
 
-        newToast(`Deleted ${editPetName}`, "success")
-
-        setEditPetName("")
-        setPetIdToEdit("")
-        setFlip(0)
+            setEditPetName("")
+            setPetIdToEdit("")
+            setFlip(0)
+        } catch (err) {
+            alert(err)
+            newToast(`Error: Unable to delete ${editPetName}`, "error")
+        }
     }
 
     return (
@@ -183,25 +187,27 @@ export const PetFeedingTracker = () => {
                         <div>{pets.map(pet => (
                             <div key={pet.id} className={pet.was_fed ? "pet fed" : "pet unfed"}>
                                 <p className="pet__name" onClick={() => {toggleFeeding(pet)}}>{pet.name}</p>
-                                <button className="pet__action" onClick={()=>{switchToEdit(pet)}}><MdMoreHoriz /></button>
+                                <button className="pet__action" onClick={()=>{switchToEdit(pet)}}><MdEdit /></button>
                             </div>
                         ))}</div>:
                     flip === 1 ?
-                        <form onSubmit={(e) => {
-                            if (petName != null) {
-                                createPet()
-                            }
-                            if (!addAnother) {
-                                setFlip(0)
-                            }
-                            setPetName("")      // Reset text field after submission
-                            setPetFreq(0)
-                            e.preventDefault()
-                        }}>
-                            <input type="text" placeholder="Pet name..." value={petName} onChange={(e) => setPetName(e.target.value)} />
-                            <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
-                            <input type="submit" value="Save" />
-                        </form>:
+                        <div className="flip1">
+                            <form onSubmit={(e) => {
+                                if (petName != null) {
+                                    createPet()
+                                }
+                                if (!addAnother) {
+                                    setFlip(0)
+                                }
+                                setPetName("")      // Reset text field after submission
+                                setPetFreq(0)
+                                e.preventDefault()
+                            }}>
+                                <input type="text" placeholder="Pet name..." value={petName} onChange={(e) => setPetName(e.target.value)} />
+                                <input type="submit" value="Save" />
+                                <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            </form>
+                        </div>:
                     flip === 2 ?
                         <>
                             <form onSubmit={(e) => {

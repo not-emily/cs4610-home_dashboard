@@ -177,6 +177,13 @@ button {
   overflow-y: auto;
   margin-top: 15px;
   margin-bottom: 15px;
+  position: relative;
+}
+
+.flip1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .toast {
@@ -226,6 +233,16 @@ input[type="checkbox"] {
   margin-right: 10px;
   width: 2em;
   height: 2em;
+}
+
+.add-another > input[type="checkbox"] {
+  width: 1em;
+  height: 1em;
+}
+
+.add-another {
+  font-size: 1.5em;
+  margin-top: 0;
 }
 
 .pet {
