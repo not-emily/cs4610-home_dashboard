@@ -2,11 +2,10 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack } from 'react-icons/md'
+import { MdAdd, MdArrowBack } from "react-icons/md";
 
 
-
-type GroceryItem = {
+type TodoItem = {
   id: string,
   creatorId: string,
   content: string,
@@ -18,10 +17,10 @@ type Toast = {
     type: "success" | "error" | "info"
 }
 
-export const GroceryList = () => {
+export const TodoList = () => {
     const user = useContext(UserContext);
     const [flip, setFlip] = useState(0)
-    const [items, setItems] = useState<GroceryItem[]>([])
+    const [items, setItems] = useState<TodoItem[]>([])
     const [content, setContent] = useState("")
     const [itemIdToEdit, setItemIdToEdit] = useState("")
     const [editItemContent, setEditItemContent] = useState("")
@@ -30,7 +29,7 @@ export const GroceryList = () => {
     const [toastTimeout, setToastTimeout] = useState<NodeJS.Timeout>()
 
     useEffect(() => {
-        loadGroceryItems();
+        loadTodoItems();
     }, [])
 
     useEffect(() => {
@@ -54,21 +53,21 @@ export const GroceryList = () => {
         setToast({message, type} as Toast)
     }
 
-    async function loadGroceryItems() {
+    async function loadTodoItems() {
         const querySnapshot = await getDocs(
             query(
-            collection(db, "grocery_items"),
+            collection(db, "todo_items"),
             where("creatorId", "==", user!.uid)
             )
         );
-        const myItems: GroceryItem[] = [];
+        const myItems: TodoItem[] = [];
         querySnapshot.forEach((doc) => {
-            myItems.push({ ...doc.data(), id: doc.id } as GroceryItem);
+            myItems.push({ ...doc.data(), id: doc.id } as TodoItem);
         });
         setItems(myItems);
     }
 
-    async function createGroceryItem() {
+    async function createTodoItem() {
         if (!content) {
         return;
         }
@@ -77,48 +76,70 @@ export const GroceryList = () => {
         isCompleted: false,
         creatorId: user!.uid,
         }
-        const docRef = await addDoc(collection(db, "grocery_items"), item);
+        const docRef = await addDoc(collection(db, "todo_items"), item);
 
-        (item as GroceryItem).id = docRef.id;
-        setItems([...items, item as GroceryItem]);
+        (item as TodoItem).id = docRef.id;
+        setItems([...items, item as TodoItem]);
     }
 
-    async function completeGroceryItem(item: GroceryItem) {
-        item.isCompleted = true
-        deleteDoc(doc(db, "grocery_items", item.id))
+    async function toggleCompletion(item: TodoItem) {
+        item.isCompleted = !item.isCompleted
+        setItems([...items])
 
-        const newItems = items.filter(e => e.id != item.id)
-        setItems(newItems)
+        const taskDocRef = doc(db, 'todo_items', item.id)
+        try{
+            await updateDoc(taskDocRef, {
+                isCompleted: item.isCompleted
+            })
+            if (item.isCompleted) {
+                newToast(`Completed "${item.content}"`, "success")
+            } else {
+                newToast(`Marked "${item.content}" as incomplete`, "info")
+            }
+        } catch (err) {
+            alert(err)
+            newToast(`Error: Could not update "${item.content}"`, "error")
+        }   
 
-        newToast(`Completed ${item.content}`, "success")
+        // try {
+        //     await deleteDoc(doc(db, "todo_items", item.id))
+        //     newToast(`Completed ${item.content}`, "success")
+        // } catch(err) {
+        //     alert(err)
+        //     newToast(`Error: Could not complete ${item.content}`, "error")
+        // }
+
+        // const newItems = items.filter(e => e.id != item.id)
+        // setItems(newItems)
     }
 
-    function switchToEdit(item: GroceryItem) {
+    function switchToEdit(item: TodoItem) {
         setFlip(2)
         setItemIdToEdit(item.id)
         setEditItemContent(item.content)
     }
 
-    async function editGroceryItem(itemContent: string) {
-        const taskDocRef = doc(db, 'grocery_items', itemIdToEdit)
+    async function editTodoItem(itemContent: string) {
+        const taskDocRef = doc(db, 'todo_items', itemIdToEdit)
         try{
             await updateDoc(taskDocRef, {
             content: itemContent
             })
             setItems([])
-            loadGroceryItems()
+            loadTodoItems()
             setFlip(0)
-            newToast(`Updated "${itemContent}"`, "success")
+            newToast(`Updated ${itemContent}`, "success")
         } catch (err) {
             alert(err)
-            newToast(`Error: Could not update "${itemContent}"`, "error")
+            newToast(`Error: Could not update ${itemContent}`, "error")
         }   
     }
+
 
     return (
         <>
             <div className="widget__header">
-                <div className="widget__title">Grocery List</div>
+                <div className="widget__title">Todo:</div>
                 <div className="widget__action">
                     {
                         flip === 0 ? 
@@ -136,14 +157,14 @@ export const GroceryList = () => {
                     flip === 0 ?
                         <div>{items.map(item => (
                             <span key={item.id} className="checklist-item">
-                                <input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>
-                                <p onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
+                                <p className={item.isCompleted ? "completed" : ""} onClick={() => {switchToEdit(item)}}>{item.content}</p>
                             </span>
                         ))}</div>:
                     flip === 1 ?
                         <form onSubmit={(e) => {
                             if (content != null) {
-                            createGroceryItem()
+                            createTodoItem()
                             }
                             if (!addAnother) {
                                 setFlip(0)
@@ -151,14 +172,14 @@ export const GroceryList = () => {
                             setContent("")      // Reset text field after submission
                             e.preventDefault()
                         }}>
-                            <input type="text" placeholder="Grocery item..." value={content} onChange={(e) => setContent(e.target.value)} />
+                            <input type="text" placeholder="Todo item..." value={content} onChange={(e) => setContent(e.target.value)} />
                             <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
                             <input type="submit" value="Save" />
                         </form>:
                     flip === 2 ?
                         <form onSubmit={(e) => {
                             if (editItemContent != null) {
-                                editGroceryItem(editItemContent)
+                                editTodoItem(editItemContent)
                             }
 
                             e.preventDefault()

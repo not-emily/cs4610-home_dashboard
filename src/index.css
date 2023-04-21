@@ -41,7 +41,7 @@ input {
 }
 
 button {
-  padding: 16px 32px;
+  padding: 10px 20px;
   border-radius: 64px;
   border: none;
   background-color: rebeccapurple;
@@ -156,9 +156,17 @@ button {
   flex: 5;
 }
 
-.widget__action {
+.widget__action > * {
   flex: 1;
   justify-content: right;
+  font-size: 20px;
+}
+
+.widget__action__icon {
+  width: 1.12em;
+  height: 1.12em;
+  cursor: pointer;
+  user-select: none;
 }
 
 .widget__header {
@@ -167,6 +175,8 @@ button {
 
 .widget__content {
   overflow-y: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .toast {
@@ -186,4 +196,31 @@ button {
 .toast--error {
   background-color: #F4CCCC;
   color: #990000;
+}
+
+.toast--info {
+  background-color: #CFE2F3;
+  color: #0B5394;
+}
+
+.checklist-item {
+  display: flex;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.checklist-item > p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+  width: 2em;
+  height: 2em;
 }
