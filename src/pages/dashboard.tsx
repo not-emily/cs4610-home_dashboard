@@ -1,4 +1,5 @@
 import { GroceryList } from "../widgets/GroceryList"
+import { PetFeedingTracker } from "../widgets/PetFeedingTracker"
 import { TodoList } from "../widgets/TodoList"
 
 export const Dashboard = () => {
@@ -23,7 +24,7 @@ export const Dashboard = () => {
             </div>
             <div className="col">
                 <div className="widget widget__md">
-                    <div className="widget__title">Hello from Dashboard3</div>
+                    <PetFeedingTracker />
                 </div>
                 <div className="widget widget__md">
                     <div className="widget__title">Hello from Dashboard3</div>

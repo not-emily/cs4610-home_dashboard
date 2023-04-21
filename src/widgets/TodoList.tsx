@@ -162,31 +162,35 @@ export const TodoList = () => {
                             </span>
                         ))}</div>:
                     flip === 1 ?
-                        <form onSubmit={(e) => {
-                            if (content != null) {
-                            createTodoItem()
-                            }
-                            if (!addAnother) {
-                                setFlip(0)
-                            }
-                            setContent("")      // Reset text field after submission
-                            e.preventDefault()
-                        }}>
-                            <input type="text" placeholder="Todo item..." value={content} onChange={(e) => setContent(e.target.value)} />
-                            <p><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
-                            <input type="submit" value="Save" />
-                        </form>:
+                        <div className="flip">
+                            <form onSubmit={(e) => {
+                                if (content != null) {
+                                createTodoItem()
+                                }
+                                if (!addAnother) {
+                                    setFlip(0)
+                                }
+                                setContent("")      // Reset text field after submission
+                                e.preventDefault()
+                            }}>
+                                <input type="text" placeholder="Todo item..." value={content} onChange={(e) => setContent(e.target.value)} />
+                                <input type="submit" value="Save" />
+                                <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                            </form>
+                        </div>:
                     flip === 2 ?
-                        <form onSubmit={(e) => {
-                            if (editItemContent != null) {
-                                editTodoItem(editItemContent)
-                            }
+                        <div className="flip">
+                            <form onSubmit={(e) => {
+                                if (editItemContent != null) {
+                                    editTodoItem(editItemContent)
+                                }
 
-                            e.preventDefault()
-                        }}>
-                            <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
-                            <input type="submit" value="Save" />
-                        </form>:
+                                e.preventDefault()
+                            }}>
+                                <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
+                                <input type="submit" value="Save" />
+                            </form>
+                        </div>:
                         <></>
                 }
             </div>
