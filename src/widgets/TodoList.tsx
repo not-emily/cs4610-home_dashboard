@@ -195,18 +195,16 @@ export const TodoList = () => {
 
     function datesText(dates: string[]) : string {
         var text = "";
-        dates.forEach(date => {
-            if (date === "sunday") text += "Sun";
-            else if (date === "monday") text += "Mon";
-            else if (date === "tuesday") text += "Tue";
-            else if (date === "wednesday") text += "Wed";
-            else if (date === "thursday") text += "Thu";
-            else if (date === "friday") text += "Fri";
-            else if (date === "saturday") text += "Sat";
-            if (dates[dates.length - 1] !== date) {
-                text += ", "
-            }
-        })
+        if (dates.includes("sunday")) text += "Sun ";
+        if (dates.includes("monday")) text += "Mon ";
+        if (dates.includes("tuesday")) text += "Tue ";
+        if (dates.includes("wednesday")) text += "Wed ";
+        if (dates.includes("thursday")) text += "Thu ";
+        if (dates.includes("friday")) text += "Fri ";
+        if (dates.includes("saturday")) text += "Sat ";
+        // if (dates[dates.length - 1] !== date) {
+        //     text += ", "
+        // }
         return text;
     }
 
