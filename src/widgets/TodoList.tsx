@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack } from "react-icons/md";
+import { MdAdd, MdArrowBack, MdRepeat, MdRestartAlt } from "react-icons/md";
 
 
 type TodoItem = {
@@ -10,6 +10,8 @@ type TodoItem = {
   creatorId: string,
   content: string,
   isCompleted: boolean,
+  dates: string[],
+  repeat: boolean
 }
 
 type Toast = {
@@ -17,19 +19,32 @@ type Toast = {
     type: "success" | "error" | "info"
 }
 
+const GetDayOfWeek = () => {
+    const today = new Date();
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return days[today.getDay()]
+  }
+
 export const TodoList = () => {
     const user = useContext(UserContext);
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<TodoItem[]>([])
+    // const [allItems, setAllItems] = useState<TodoItem[]>([])
     const [content, setContent] = useState("")
+    const [dates, setDates] = useState<String[]>([])
+    const [repeat, setRepeat] = useState(false)
+
     const [itemIdToEdit, setItemIdToEdit] = useState("")
     const [editItemContent, setEditItemContent] = useState("")
+    const [editItemDate, setEditItemDate] = useState("")
+    const [editItemRepeat, setEditItemRepeat] = useState(false)
+
     const [addAnother, setAddAnother] = useState(false)
     const [toast, setToast] = useState<Toast | null>(null)
     const [toastTimeout, setToastTimeout] = useState<NodeJS.Timeout>()
 
     useEffect(() => {
-        loadTodoItems();
+        loadTodaysTodos();
     }, [])
 
     useEffect(() => {
@@ -53,33 +68,55 @@ export const TodoList = () => {
         setToast({message, type} as Toast)
     }
 
-    async function loadTodoItems() {
+    async function loadTodaysTodos() {
+        const today = GetDayOfWeek().toLowerCase().toString();
         const querySnapshot = await getDocs(
             query(
             collection(db, "todo_items"),
             where("creatorId", "==", user!.uid)
             )
         );
-        const myItems: TodoItem[] = [];
+        const allTodos: TodoItem[] = [];
         querySnapshot.forEach((doc) => {
-            myItems.push({ ...doc.data(), id: doc.id } as TodoItem);
+            allTodos.push({ ...doc.data(), id: doc.id } as TodoItem);
         });
-        setItems(myItems);
+
+        const todayItems = allTodos.filter(todo => todo.dates.includes(today))
+        setItems(todayItems);
     }
 
+    // async function loadAllTodos() {
+    //     const querySnapshot = await getDocs(
+    //         query(
+    //         collection(db, "todo_items"),
+    //         where("creatorId", "==", user!.uid)
+    //         )
+    //     );
+    //     querySnapshot.forEach((doc) => {
+    //         setAllItems([...items, { ...doc.data(), id: doc.id } as TodoItem])
+    //     });
+    // }
+
     async function createTodoItem() {
+        const today = GetDayOfWeek().toLowerCase().toString();
         if (!content) {
         return;
         }
         const item = {
-        content: content,
-        isCompleted: false,
-        creatorId: user!.uid,
+            content: content,
+            isCompleted: false,
+            dates: dates,
+            repeat: repeat,
+            creatorId: user!.uid,
         }
         const docRef = await addDoc(collection(db, "todo_items"), item);
 
         (item as TodoItem).id = docRef.id;
-        setItems([...items, item as TodoItem]);
+        if(item.dates.includes(today)) {
+            console.log(item.content);
+            setItems([...items, item as TodoItem]);
+        } 
+        // else {setAllItems([...allItems, item as TodoItem])}
     }
 
     async function toggleCompletion(item: TodoItem) {
@@ -126,13 +163,35 @@ export const TodoList = () => {
             content: itemContent
             })
             setItems([])
-            loadTodoItems()
+            loadTodaysTodos()
             setFlip(0)
             newToast(`Updated ${itemContent}`, "success")
         } catch (err) {
             alert(err)
             newToast(`Error: Could not update ${itemContent}`, "error")
         }   
+    }
+
+    function removeDate(date: string) {
+        const newDates = dates.filter(e => e !== date)
+        setDates([...newDates])
+    }
+
+    function datesText(dates: string[]) : string {
+        var text = "";
+        dates.forEach(date => {
+            if (date === "sunday") text += "Sun";
+            else if (date === "monday") text += "Mon";
+            else if (date === "tuesday") text += "Tue";
+            else if (date === "wednesday") text += "Wed";
+            else if (date === "thursday") text += "Thu";
+            else if (date === "friday") text += "Fri";
+            else if (date === "saturday") text += "Sat";
+            if (dates[dates.length - 1] !== date) {
+                text += ", "
+            }
+        })
+        return text;
     }
 
 
@@ -155,12 +214,18 @@ export const TodoList = () => {
             <div className="widget__content">
                 {
                     flip === 0 ?
-                        <div>{items.map(item => (
-                            <span key={item.id} className="checklist-item">
-                                <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
-                                <p className={item.isCompleted ? "completed" : ""} onClick={() => {switchToEdit(item)}}>{item.content}</p>
-                            </span>
-                        ))}</div>:
+                        <>
+                            <div>{items.map(item => (
+                                <span key={item.id} className="checklist-item">
+                                    <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
+                                    <span className="todo-info">
+                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"} onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                        <p className="todo-info__dates">{item.repeat ? <MdRestartAlt />: <></>}{datesText(item.dates)}</p>
+                                    </span>
+                                </span>
+                            ))}</div>
+                            <button>View All</button>
+                        </>:
                     flip === 1 ?
                         <div className="flip">
                             <form onSubmit={(e) => {
@@ -171,11 +236,24 @@ export const TodoList = () => {
                                     setFlip(0)
                                 }
                                 setContent("")      // Reset text field after submission
+                                setDates([])
+                                setRepeat(false)
+
                                 e.preventDefault()
                             }}>
                                 <input type="text" placeholder="Todo item..." value={content} onChange={(e) => setContent(e.target.value)} />
-                                <input type="submit" value="Save" />
+                                <span className="dates">
+                                    <button type="button" className={dates.includes("sunday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("sunday") ? removeDate("sunday") : setDates([...dates, "sunday"])}}> Su </button>
+                                    <button type="button" className={dates.includes("monday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("monday") ? removeDate("monday") : setDates([...dates, "monday"])}}> M </button>
+                                    <button type="button" className={dates.includes("tuesday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("tuesday") ? removeDate("tuesday") : setDates([...dates, "tuesday"])}}> Tu </button>
+                                    <button type="button" className={dates.includes("wednesday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("wednesday") ? removeDate("wednesday") : setDates([...dates, "wednesday"])}}> W </button>
+                                    <button type="button" className={dates.includes("thursday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("thursday") ? removeDate("thursday") : setDates([...dates, "thursday"])}}> Th </button>
+                                    <button type="button" className={dates.includes("friday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("friday") ? removeDate("friday") : setDates([...dates, "friday"])}}> F </button>
+                                    <button type="button" className={dates.includes("saturday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {dates.includes("saturday") ? removeDate("saturday") : setDates([...dates, "saturday"])}}> Sa </button>
+                                </span>
+                                <p className="add-another"><input type="checkbox" checked={repeat} onChange={() => {setRepeat(!repeat)}} /> Repeat? </p>
                                 <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                                <input type="submit" value="Save" />
                             </form>
                         </div>:
                     flip === 2 ?
