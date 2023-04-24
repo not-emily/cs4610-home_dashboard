@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack, MdExpandMore, MdRepeat, MdRestartAlt, MdVisibility } from "react-icons/md";
+import { MdAdd, MdArrowBack, MdDelete, MdExpandMore, MdRepeat, MdRestartAlt, MdVisibility } from "react-icons/md";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
@@ -90,18 +90,6 @@ export const TodoList = () => {
         setAllItems(allTodos)
     }
 
-    // async function loadAllTodos() {
-    //     const querySnapshot = await getDocs(
-    //         query(
-    //         collection(db, "todo_items"),
-    //         where("creatorId", "==", user!.uid)
-    //         )
-    //     );
-    //     querySnapshot.forEach((doc) => {
-    //         setAllItems([...items, { ...doc.data(), id: doc.id } as TodoItem])
-    //     });
-    // }
-
     async function createTodoItem() {
         const today = GetDayOfWeek().toLowerCase().toString();
         if (!content) {
@@ -144,17 +132,28 @@ export const TodoList = () => {
             }   
         }
         else {
-            try {
-                await deleteDoc(doc(db, "todo_items", item.id))
-                const newItems = items.filter(e => e.id != item.id)
-                setItems(newItems)
-                newToast(`Completed "${item.content}"`, "success")
-            } catch(err) {
-                alert(err)
-                newToast(`Error: Could not complete "${item.content}"`, "error")
-            }
+            deleteTodo(item.id, item.content)
         }
 
+    }
+
+    async function deleteTodo(todoId: string, todoContent: string) {
+        try {
+            await deleteDoc(doc(db, "todo_items", todoId))
+            newToast(`Completed "${todoContent}"`, "success")
+
+            const newItems = items.filter(e => e.id != todoId)
+            setItems(newItems)
+
+            setEditItemContent("")
+            setEditItemDates([])
+            setEditItemRepeat(false)
+            setItemIdToEdit("")
+            setFlip(0)
+        } catch(err) {
+            alert(err)
+            newToast(`Error: Could not complete "${todoContent}"`, "error")
+        }
     }
 
     function switchToEdit(item: TodoItem) {
@@ -202,12 +201,16 @@ export const TodoList = () => {
         if (dates.includes("thursday")) text += "Thu ";
         if (dates.includes("friday")) text += "Fri ";
         if (dates.includes("saturday")) text += "Sat ";
-        // if (dates[dates.length - 1] !== date) {
-        //     text += ", "
-        // }
         return text;
     }
 
+    function confirmDelete(todoId: string, todoContent: string) {
+        console.log(`Trying to delete ${todoContent}`)
+        const result = confirm(`Are you sure you want to delete "${todoContent}"?`)
+        if (result) {
+          deleteTodo(todoId, todoContent);
+        }
+    }
 
     return (
         <>
@@ -295,6 +298,7 @@ export const TodoList = () => {
                                 </span>
                                 <p className="add-another"><input type="checkbox" checked={editItemRepeat} onChange={() => {setEditItemRepeat(!editItemRepeat)}} /> Repeat? </p>
                                 <input className="fw-btn" type="submit" value="Save" />
+                                <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(itemIdToEdit, editItemContent)}}><MdDelete /> Delete </button></p>
                             </form>
                         </div>:
                     flip === 3 ?
