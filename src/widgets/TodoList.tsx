@@ -40,7 +40,7 @@ export const TodoList = () => {
 
     const [itemIdToEdit, setItemIdToEdit] = useState("")
     const [editItemContent, setEditItemContent] = useState("")
-    const [editItemDate, setEditItemDate] = useState("")
+    const [editItemDates, setEditItemDates] = useState<String[]>([])
     const [editItemRepeat, setEditItemRepeat] = useState(false)
 
     const [addAnother, setAddAnother] = useState(false)
@@ -161,13 +161,17 @@ export const TodoList = () => {
         setFlip(2)
         setItemIdToEdit(item.id)
         setEditItemContent(item.content)
+        setEditItemDates(item.dates)
+        setEditItemRepeat(item.repeat)
     }
 
-    async function editTodoItem(itemContent: string) {
+    async function editTodoItem(itemContent: string, itemDates: String[], itemRepeat: boolean) {
         const taskDocRef = doc(db, 'todo_items', itemIdToEdit)
         try{
             await updateDoc(taskDocRef, {
-            content: itemContent
+                content: itemContent,
+                dates: itemDates,
+                repeat: itemRepeat
             })
             setItems([])
             loadTodos()
@@ -182,6 +186,11 @@ export const TodoList = () => {
     function removeDate(date: string) {
         const newDates = dates.filter(e => e !== date)
         setDates([...newDates])
+    }
+
+    function removeEditDate(date: string) {
+        const newDates = editItemDates.filter(e => e !== date)
+        setEditItemDates([...newDates])
     }
 
     function datesText(dates: string[]) : string {
@@ -271,12 +280,22 @@ export const TodoList = () => {
                         <div className="flip">
                             <form onSubmit={(e) => {
                                 if (editItemContent != null) {
-                                    editTodoItem(editItemContent)
+                                    editTodoItem(editItemContent, editItemDates, editItemRepeat)
                                 }
 
                                 e.preventDefault()
                             }}>
                                 <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
+                                <span className="dates">
+                                    <button type="button" className={editItemDates.includes("sunday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("sunday") ? removeEditDate("sunday") : setEditItemDates([...editItemDates, "sunday"])}}> Su </button>
+                                    <button type="button" className={editItemDates.includes("monday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("monday") ? removeEditDate("monday") : setEditItemDates([...editItemDates, "monday"])}}> M </button>
+                                    <button type="button" className={editItemDates.includes("tuesday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("tuesday") ? removeEditDate("tuesday") : setEditItemDates([...editItemDates, "tuesday"])}}> Tu </button>
+                                    <button type="button" className={editItemDates.includes("wednesday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("wednesday") ? removeEditDate("wednesday") : setEditItemDates([...editItemDates, "wednesday"])}}> W </button>
+                                    <button type="button" className={editItemDates.includes("thursday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("thursday") ? removeEditDate("thursday") : setEditItemDates([...editItemDates, "thursday"])}}> Th </button>
+                                    <button type="button" className={editItemDates.includes("friday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("friday") ? removeEditDate("friday") : setEditItemDates([...editItemDates, "friday"])}}> F </button>
+                                    <button type="button" className={editItemDates.includes("saturday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("saturday") ? removeEditDate("saturday") : setEditItemDates([...editItemDates, "saturday"])}}> Sa </button>
+                                </span>
+                                <p className="add-another"><input type="checkbox" checked={editItemRepeat} onChange={() => {setEditItemRepeat(!editItemRepeat)}} /> Repeat? </p>
                                 <input type="submit" value="Save" />
                             </form>
                         </div>:
