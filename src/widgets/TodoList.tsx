@@ -27,7 +27,7 @@ const GetDayOfWeek = () => {
     const today = new Date();
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return days[today.getDay()]
-  }
+}
 
 export const TodoList = () => {
     const user = useContext(UserContext);
@@ -91,10 +91,13 @@ export const TodoList = () => {
     }
 
     async function createTodoItem() {
-        const today = GetDayOfWeek().toLowerCase().toString();
         if (!content) {
         return;
         }
+
+        const today = GetDayOfWeek().toLowerCase().toString();
+        if (dates.length === 0) dates.push(today)
+
         const item = {
             content: content,
             isCompleted: false,
@@ -165,6 +168,9 @@ export const TodoList = () => {
     }
 
     async function editTodoItem(itemContent: string, itemDates: String[], itemRepeat: boolean) {
+        const today = GetDayOfWeek().toLowerCase().toString();
+        if (itemDates.length === 0) itemDates.push(today)
+
         const taskDocRef = doc(db, 'todo_items', itemIdToEdit)
         try{
             await updateDoc(taskDocRef, {
