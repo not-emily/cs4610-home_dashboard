@@ -128,30 +128,33 @@ export const TodoList = () => {
         setItems([...items])
 
         const taskDocRef = doc(db, 'todo_items', item.id)
-        try{
-            await updateDoc(taskDocRef, {
-                isCompleted: item.isCompleted
-            })
-            if (item.isCompleted) {
-                newToast(`Completed "${item.content}"`, "success")
-            } else {
-                newToast(`Marked "${item.content}" as incomplete`, "info")
+        if (item.repeat) {
+            try{
+                await updateDoc(taskDocRef, {
+                    isCompleted: item.isCompleted
+                })
+                if (item.isCompleted) {
+                    newToast(`Completed "${item.content}"`, "success")
+                } else {
+                    newToast(`Marked "${item.content}" as incomplete`, "info")
+                }
+            } catch (err) {
+                alert(err)
+                newToast(`Error: Could not update "${item.content}"`, "error")
+            }   
+        }
+        else {
+            try {
+                await deleteDoc(doc(db, "todo_items", item.id))
+                const newItems = items.filter(e => e.id != item.id)
+                setItems(newItems)
+                newToast(`Completed ${item.content}`, "success")
+            } catch(err) {
+                alert(err)
+                newToast(`Error: Could not complete ${item.content}`, "error")
             }
-        } catch (err) {
-            alert(err)
-            newToast(`Error: Could not update "${item.content}"`, "error")
-        }   
+        }
 
-        // try {
-        //     await deleteDoc(doc(db, "todo_items", item.id))
-        //     newToast(`Completed ${item.content}`, "success")
-        // } catch(err) {
-        //     alert(err)
-        //     newToast(`Error: Could not complete ${item.content}`, "error")
-        // }
-
-        // const newItems = items.filter(e => e.id != item.id)
-        // setItems(newItems)
     }
 
     function switchToEdit(item: TodoItem) {
