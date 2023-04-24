@@ -2,7 +2,11 @@ import { useContext, useEffect, useState } from "react"
 import UserContext from "../context/user";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import { MdAdd, MdArrowBack, MdRepeat, MdRestartAlt } from "react-icons/md";
+import { MdAdd, MdArrowBack, MdExpandMore, MdRepeat, MdRestartAlt, MdVisibility } from "react-icons/md";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+
+
 
 
 type TodoItem = {
@@ -116,7 +120,7 @@ export const TodoList = () => {
         if(item.dates.includes(today)) {
             setItems([...items, item as TodoItem]);
         } 
-        else {setAllItems([...allItems, item as TodoItem])}
+        setAllItems([...allItems, item as TodoItem])
     }
 
     async function toggleCompletion(item: TodoItem) {
@@ -202,7 +206,10 @@ export const TodoList = () => {
                 <div className="widget__action">
                     {
                         flip === 0 ? 
-                            <button onClick={() => setFlip(1)}><MdAdd className="widget__action__icon"/></button>:
+                            <Popup trigger={<button><MdExpandMore className="widget__action__icon"/></button>} position="bottom right">
+                                <button onClick={() => setFlip(1)}><MdAdd className="decor-icon" /> Add Todo </button>
+                                <button onClick={() => setFlip(3)}><MdVisibility className="decor-icon" /> View All </button>
+                            </Popup>:
                         flip === 1 ?
                             <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                         flip === 2 ?
@@ -222,11 +229,10 @@ export const TodoList = () => {
                                     <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
                                     <span className="todo-info">
                                         <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"} onClick={() => {switchToEdit(item)}}>{item.content}</p>
-                                        <p className="todo-info__dates">{item.repeat ? <MdRestartAlt />: <></>}{datesText(item.dates)}</p>
+                                        <p className="todo-info__dates">{item.repeat ? <MdRestartAlt className="decor-icon" />: <></>}{datesText(item.dates)}</p>
                                     </span>
                                 </span>
                             ))}</div>
-                            <button onClick={() => setFlip(3)}>View All</button>
                         </>:
                     flip === 1 ?
                         <div className="flip">
