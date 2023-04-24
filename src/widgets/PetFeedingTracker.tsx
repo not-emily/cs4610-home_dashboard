@@ -204,8 +204,8 @@ export const PetFeedingTracker = () => {
                                 e.preventDefault()
                             }}>
                                 <input type="text" placeholder="Pet name..." value={petName} onChange={(e) => setPetName(e.target.value)} />
-                                <input type="submit" value="Save" />
                                 <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
+                                <input className="fw-btn" type="submit" value="Save" />
                             </form>
                         </div>:
                     flip === 2 ?
@@ -219,7 +219,7 @@ export const PetFeedingTracker = () => {
                             }}>
                                 <input type="text" value={editPetName} onChange={(e) => setEditPetName(e.target.value)} />
                                 <input type="submit" value="Save" />
-                                <p><button onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button></p>
+                                <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button></p>
                             </form>
                         
                         </div>:

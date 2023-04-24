@@ -216,6 +216,7 @@ button {
 .todo-info {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .todo-info__name {
@@ -234,6 +235,7 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 10px 0;
 }
 
 .date-btn {
@@ -283,6 +285,7 @@ input[type="checkbox"] {
 .add-another {
   font-size: 1.5em;
   margin-top: 0;
+  margin-bottom: 5px;
 }
 
 .pet {
@@ -322,4 +325,16 @@ input[type="checkbox"] {
 
 .decor-icon {
   margin-right: 5px;
+}
+
+.fw-btn {
+  width: 100%;
+}
+
+.menu-btn {
+  margin: 5px 0;
+}
+
+.err-btn {
+  background-color: #cc0000;
 }

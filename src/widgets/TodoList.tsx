@@ -148,10 +148,10 @@ export const TodoList = () => {
                 await deleteDoc(doc(db, "todo_items", item.id))
                 const newItems = items.filter(e => e.id != item.id)
                 setItems(newItems)
-                newToast(`Completed ${item.content}`, "success")
+                newToast(`Completed "${item.content}"`, "success")
             } catch(err) {
                 alert(err)
-                newToast(`Error: Could not complete ${item.content}`, "error")
+                newToast(`Error: Could not complete "${item.content}"`, "error")
             }
         }
 
@@ -176,10 +176,10 @@ export const TodoList = () => {
             setItems([])
             loadTodos()
             setFlip(0)
-            newToast(`Updated ${itemContent}`, "success")
+            newToast(`Updated "${itemContent}"`, "success")
         } catch (err) {
             alert(err)
-            newToast(`Error: Could not update ${itemContent}`, "error")
+            newToast(`Error: Could not update "${itemContent}"`, "error")
         }   
     }
 
@@ -219,8 +219,8 @@ export const TodoList = () => {
                     {
                         flip === 0 ? 
                             <Popup trigger={<button><MdExpandMore className="widget__action__icon"/></button>} position="bottom right">
-                                <button onClick={() => setFlip(1)}><MdAdd className="decor-icon" /> Add Todo </button>
-                                <button onClick={() => setFlip(3)}><MdVisibility className="decor-icon" /> View All </button>
+                                <button className="fw-btn menu-btn" onClick={() => setFlip(1)}><MdAdd className="decor-icon" /> Add Todo </button>
+                                <button className="fw-btn menu-btn" onClick={() => setFlip(3)}><MdVisibility className="decor-icon" /> View All </button>
                             </Popup>:
                         flip === 1 ?
                             <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
@@ -239,8 +239,8 @@ export const TodoList = () => {
                             <div>{items.map(item => (
                                 <span key={item.id} className="checklist-item">
                                     <input type="checkbox" checked={item.isCompleted} onChange={() => toggleCompletion(item)}/>
-                                    <span className="todo-info">
-                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"} onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                    <span className="todo-info" onClick={() => {switchToEdit(item)}}>
+                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"}>{item.content}</p>
                                         <p className="todo-info__dates">{item.repeat ? <MdRestartAlt className="decor-icon" />: <></>}{datesText(item.dates)}</p>
                                     </span>
                                 </span>
@@ -273,7 +273,7 @@ export const TodoList = () => {
                                 </span>
                                 <p className="add-another"><input type="checkbox" checked={repeat} onChange={() => {setRepeat(!repeat)}} /> Repeat? </p>
                                 <p className="add-another"><input type="checkbox" checked={addAnother} onChange={() => {setAddAnother(!addAnother)}}/>Add another</p>
-                                <input type="submit" value="Save" />
+                                <input className="fw-btn" type="submit" value="Save" />
                             </form>
                         </div>:
                     flip === 2 ?
@@ -296,15 +296,15 @@ export const TodoList = () => {
                                     <button type="button" className={editItemDates.includes("saturday") ? "date-btn date-btn__selected" : "date-btn date-btn__unselected"} onClick={() => {editItemDates.includes("saturday") ? removeEditDate("saturday") : setEditItemDates([...editItemDates, "saturday"])}}> Sa </button>
                                 </span>
                                 <p className="add-another"><input type="checkbox" checked={editItemRepeat} onChange={() => {setEditItemRepeat(!editItemRepeat)}} /> Repeat? </p>
-                                <input type="submit" value="Save" />
+                                <input className="fw-btn" type="submit" value="Save" />
                             </form>
                         </div>:
                     flip === 3 ?
                         <div className="flip">
                             <div>{allItems.map(item => (
                                 <span key={item.id} className="checklist-item">
-                                    <span className="todo-info">
-                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"} onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                    <span className="todo-info" onClick={() => {switchToEdit(item)}}>
+                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"}>{item.content}</p>
                                         <p className="todo-info__dates">{item.repeat ? <MdRestartAlt />: <></>}{datesText(item.dates)}</p>
                                     </span>
                                 </span>

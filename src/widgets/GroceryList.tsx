@@ -137,7 +137,7 @@ export const GroceryList = () => {
                         <div>{items.map(item => (
                             <span key={item.id} className="checklist-item">
                                 <input type="checkbox" checked={item.isCompleted} onChange={() => completeGroceryItem(item)}/>
-                                <p onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                <p className="todo-info" onClick={() => {switchToEdit(item)}}>{item.content}</p>
                             </span>
                         ))}</div>:
                     flip === 1 ?
