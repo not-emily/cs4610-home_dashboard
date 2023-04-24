@@ -29,7 +29,7 @@ export const TodoList = () => {
     const user = useContext(UserContext);
     const [flip, setFlip] = useState(0)
     const [items, setItems] = useState<TodoItem[]>([])
-    // const [allItems, setAllItems] = useState<TodoItem[]>([])
+    const [allItems, setAllItems] = useState<TodoItem[]>([])
     const [content, setContent] = useState("")
     const [dates, setDates] = useState<String[]>([])
     const [repeat, setRepeat] = useState(false)
@@ -44,7 +44,7 @@ export const TodoList = () => {
     const [toastTimeout, setToastTimeout] = useState<NodeJS.Timeout>()
 
     useEffect(() => {
-        loadTodaysTodos();
+        loadTodos();
     }, [])
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export const TodoList = () => {
         setToast({message, type} as Toast)
     }
 
-    async function loadTodaysTodos() {
+    async function loadTodos() {
         const today = GetDayOfWeek().toLowerCase().toString();
         const querySnapshot = await getDocs(
             query(
@@ -83,6 +83,7 @@ export const TodoList = () => {
 
         const todayItems = allTodos.filter(todo => todo.dates.includes(today))
         setItems(todayItems);
+        setAllItems(allTodos)
     }
 
     // async function loadAllTodos() {
@@ -113,10 +114,9 @@ export const TodoList = () => {
 
         (item as TodoItem).id = docRef.id;
         if(item.dates.includes(today)) {
-            console.log(item.content);
             setItems([...items, item as TodoItem]);
         } 
-        // else {setAllItems([...allItems, item as TodoItem])}
+        else {setAllItems([...allItems, item as TodoItem])}
     }
 
     async function toggleCompletion(item: TodoItem) {
@@ -163,7 +163,7 @@ export const TodoList = () => {
             content: itemContent
             })
             setItems([])
-            loadTodaysTodos()
+            loadTodos()
             setFlip(0)
             newToast(`Updated ${itemContent}`, "success")
         } catch (err) {
@@ -207,6 +207,8 @@ export const TodoList = () => {
                             <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                         flip === 2 ?
                             <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
+                        flip === 3 ?
+                            <button onClick={() => setFlip(0)}><MdArrowBack className="widget__action__icon" /></button>:
                             <></>
                     }
                 </div>
@@ -224,7 +226,7 @@ export const TodoList = () => {
                                     </span>
                                 </span>
                             ))}</div>
-                            <button>View All</button>
+                            <button onClick={() => setFlip(3)}>View All</button>
                         </>:
                     flip === 1 ?
                         <div className="flip">
@@ -268,6 +270,18 @@ export const TodoList = () => {
                                 <input type="text" value={editItemContent} onChange={(e) => setEditItemContent(e.target.value)} />
                                 <input type="submit" value="Save" />
                             </form>
+                        </div>:
+                    flip === 3 ?
+                        <div className="flip">
+                            <div>{allItems.map(item => (
+                                <span key={item.id} className="checklist-item">
+                                    <span className="todo-info">
+                                        <p className={item.isCompleted ? "todo-info__name completed" : "todo-info__name"} onClick={() => {switchToEdit(item)}}>{item.content}</p>
+                                        <p className="todo-info__dates">{item.repeat ? <MdRestartAlt />: <></>}{datesText(item.dates)}</p>
+                                    </span>
+                                </span>
+                            ))}</div>
+
                         </div>:
                         <></>
                 }
