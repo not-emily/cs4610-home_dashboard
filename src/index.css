@@ -119,7 +119,7 @@ button {
 
 .dashboard {
   display: flex;
-  margin: 24px;
+  margin: 0 24px;
   height: 100vh;
 }
 
@@ -213,10 +213,52 @@ button {
   border-top: solid #0B5394;
 }
 
+.todo-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.todo-info__name {
+  margin: 0;
+  font-size: .75em;
+}
+
+.todo-info__dates {
+  color: gray;
+  font-size: .5em;
+  margin: 0;
+  margin-top: -5px;
+}
+
+.dates {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.date-btn {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border: solid #0B5394;
+  color: #0B5394;
+}
+
+.date-btn__selected {
+  background-color: #CFE2F3;
+}
+
+.date-btn__unselected {
+  background-color: #ffffff;
+}
+
 .checklist-item {
   display: flex;
   font-size: 2em;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .checklist-item > p {
@@ -229,13 +271,13 @@ button {
   color: gray;
 }
 
-input[type="checkbox"] {
-  margin-right: 10px;
-  width: 2em;
+.checklist-item > input[type="checkbox"] {
   height: 2em;
+  width: 2em;
+  margin-right: 10px;
 }
 
-.add-another > input[type="checkbox"] {
+input[type="checkbox"] {
   width: 1em;
   height: 1em;
 }
@@ -243,6 +285,7 @@ input[type="checkbox"] {
 .add-another {
   font-size: 1.5em;
   margin-top: 0;
+  margin-bottom: 5px;
 }
 
 .pet {
@@ -278,4 +321,20 @@ input[type="checkbox"] {
 .pet__action > svg {
   width: 1.5em;
   height: 1.5em;
+}
+
+.decor-icon {
+  margin-right: 5px;
+}
+
+.fw-btn {
+  width: 100%;
+}
+
+.menu-btn {
+  margin: 5px 0;
+}
+
+.err-btn {
+  background-color: #cc0000;
 }
