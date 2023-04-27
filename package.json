@@ -1,5 +1,6 @@
 {
-  "name": "firebasechat",
+  "name": "homedashboard",
+  "homepage": "https://not-emily.github.io/cs4610-home_dashboard/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
