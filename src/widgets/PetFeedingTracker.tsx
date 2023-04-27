@@ -219,8 +219,8 @@ export const PetFeedingTracker = () => {
                             }}>
                                 <input type="text" value={editPetName} onChange={(e) => setEditPetName(e.target.value)} />
                                 <input type="submit" value="Save" />
-                                <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button></p>
                             </form>
+                            <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(petIdToEdit, editPetName)}}>Delete <MdDelete /></button></p>
                         
                         </div>:
                         <></>
