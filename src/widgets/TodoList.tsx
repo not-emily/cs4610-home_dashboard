@@ -304,8 +304,8 @@ export const TodoList = () => {
                                 </span>
                                 <p className="add-another"><input type="checkbox" checked={editItemRepeat} onChange={() => {setEditItemRepeat(!editItemRepeat)}} /> Repeat? </p>
                                 <input className="fw-btn" type="submit" value="Save" />
-                                <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(itemIdToEdit, editItemContent)}}><MdDelete /> Delete </button></p>
                             </form>
+                            <p><button className="fw-btn err-btn" onClick={() => {confirmDelete(itemIdToEdit, editItemContent)}}><MdDelete /> Delete </button></p>
                         </div>:
                     flip === 3 ?
                         <div className="flip">
