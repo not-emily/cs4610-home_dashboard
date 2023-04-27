@@ -22,6 +22,9 @@
 body {
   height: 100vh;
   margin: 0;
+  padding: 0;
+  background-image: url("./assets/forest-bg.jpeg");
+  background-size: cover;
 }
 #root {
   height: 100%;
@@ -150,9 +153,13 @@ button {
   flex-direction: column;
   position: relative;
   border-radius: 20px;
-  border: solid #000;
+  /* border: solid #000; */
   margin: 15px;
-  padding: 15px
+  padding: 15px;
+
+  background-color: rgb(256, 256, 256, 0.75);
+  box-shadow: 0 0 5px gray;
+
 }
 
 .widget__sm {
