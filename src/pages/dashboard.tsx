@@ -1,10 +1,18 @@
+import { MdSettings } from "react-icons/md"
 import { GroceryList } from "../widgets/GroceryList"
 import { PetFeedingTracker } from "../widgets/PetFeedingTracker"
 import { TodoList } from "../widgets/TodoList"
+import { useState } from "react"
+import { Sidebar } from "../components/Sidebar"
 
 export const Dashboard = () => {
+    const [isExpanded, setIsExpanded] = useState(false)
+
     return (
         <>
+        <div className={isExpanded ? "sidebar" : "sidebar collapsed"}>
+            <Sidebar state={isExpanded} setState={setIsExpanded}/>
+        </div>
         <div className="dashboard">
             <div className="col">
                 <div className="widget widget__sm">
@@ -29,6 +37,9 @@ export const Dashboard = () => {
                 <div className="widget widget__md">
                     <div className="widget__title">Hello from Dashboard3</div>
                 </div>
+            </div>
+            <div className="settings">
+                <button onClick={() => setIsExpanded(true)}><MdSettings /></button>
             </div>
         </div>
         </>
