@@ -435,3 +435,16 @@ input[type="checkbox"] {
 .sidebar.collapsed .sidebar__logo {
   display: none;
 }
+
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 100px;
+}
+.today {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 30px;
+}
