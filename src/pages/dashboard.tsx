@@ -5,6 +5,7 @@ import { Weather } from "../widgets/Weather"
 import { TodoList } from "../widgets/TodoList"
 import { useState } from "react"
 import { Sidebar } from "../components/Sidebar"
+import { ClockDate } from "../widgets/ClockDate"
 
 export const Dashboard = () => {
     const [isExpanded, setIsExpanded] = useState(false)
@@ -17,7 +18,7 @@ export const Dashboard = () => {
         <div className="dashboard">
             <div className="col">
                 <div className="widget widget__sm">
-                    <div className="widget__title">Hello from Dashboard1</div>
+                    <ClockDate />
                 </div>
                 <div className="widget widget__lg">
                     <TodoList />

@@ -447,4 +447,15 @@ input[type="checkbox"] {
 .highLowTemp {
   font-size: medium;
   
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 5.5em;
+}
+.today {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2em;
 }
