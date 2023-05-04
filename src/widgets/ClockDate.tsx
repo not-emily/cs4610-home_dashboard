@@ -51,8 +51,8 @@ export const ClockDate = () => {
 
     return (
         <>
-        <div className="widget__content clock">{time}</div>
-        <div className="widget__content today"> {date}</div>
+        <div className="clock">{time}</div>
+        <div className="today"> {date}</div>
         </>
     )
 }
