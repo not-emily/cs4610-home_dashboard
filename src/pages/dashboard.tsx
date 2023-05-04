@@ -1,6 +1,7 @@
 import { MdSettings } from "react-icons/md"
 import { GroceryList } from "../widgets/GroceryList"
 import { PetFeedingTracker } from "../widgets/PetFeedingTracker"
+import { Weather } from "../widgets/Weather"
 import { TodoList } from "../widgets/TodoList"
 import { useState } from "react"
 import { Sidebar } from "../components/Sidebar"
@@ -27,7 +28,7 @@ export const Dashboard = () => {
                     <GroceryList />
                 </div>
                 <div className="widget widget__sm">
-                    <div className="widget__title">Hello from Dashboard2</div>
+                    <Weather />
                 </div>
             </div>
             <div className="col">

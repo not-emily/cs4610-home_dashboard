@@ -435,3 +435,16 @@ input[type="checkbox"] {
 .sidebar.collapsed .sidebar__logo {
   display: none;
 }
+
+.currentTemp {
+  font-size: 5.5em;
+  line-height: 90%;
+}
+.descript {
+  font-size: 1.6em;
+  line-height: 90%;
+}
+.highLowTemp {
+  font-size: medium;
+  
+}
