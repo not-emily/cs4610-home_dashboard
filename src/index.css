@@ -47,7 +47,7 @@ button {
   padding: 10px 20px;
   border-radius: 64px;
   border: none;
-  background-color: rebeccapurple;
+  background-color: #89957A;
   color: white;
   text-transform: uppercase;
 }
@@ -277,6 +277,7 @@ input[type="checkbox"] {
 .pet__action {
   flex: 1;
   margin: 10px;
+  background-color: gray;
 }
 
 .pet__action > svg {
