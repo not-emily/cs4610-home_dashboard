@@ -375,11 +375,15 @@ input[type="checkbox"] {
 
 .weather {
   display: flex;
+  height: 100%;
 }
 
 .weather-conditions {
+  display: flex;
+  flex-direction: column;
   width: 50%;
   padding-left: 25px;
+  justify-content: center;
 }
 
 .weather-icon {
@@ -387,7 +391,7 @@ input[type="checkbox"] {
 }
 
 .weather-icon__image {
-  height: 100%;
+  height: 95%;
 }
 
 .currentTemp {
