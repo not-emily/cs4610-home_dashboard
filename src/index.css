@@ -47,7 +47,7 @@ button {
   padding: 10px 20px;
   border-radius: 64px;
   border: none;
-  background-color: rebeccapurple;
+  background-color: #89957A;
   color: white;
   text-transform: uppercase;
 }
@@ -55,69 +55,6 @@ button {
 .secondary {
   color: rgb(25, 96, 141);
   background-color: transparent;
-}
-
-.panels {
-  display: flex;
-  height: 100%;
-}
-
-.rooms-panel {
-  padding: 16px;
-  flex: 1;
-  border-right: 1px solid gray;
-}
-.create-room {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.create-room-controls {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.chat-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.messages {
-  flex: 1;
-  display: flex;
-  flex-direction: column-reverse;
-  padding: 16px;
-}
-
-.chatbar {
-  display: flex;
-}
-
-.chat-input {
-  border: unset;
-  border-radius: 0px;
-  border-top: 1px solid black;
-}
-
-.chat-input {
-  flex: 1;
-}
-
-.send-button {
-  border-radius: 0px;
-}
-
-.join-room {
-  flex: 1;
-  padding: 16px;
-}
-
-.room {
-  padding: 16px;
-  border-top: 1px solid black;
-  margin-top: 8px;
 }
 
 .dashboard {
@@ -340,6 +277,7 @@ input[type="checkbox"] {
 .pet__action {
   flex: 1;
   margin: 10px;
+  background-color: gray;
 }
 
 .pet__action > svg {
@@ -436,6 +374,39 @@ input[type="checkbox"] {
   display: none;
 }
 
+.weather {
+  display: flex;
+  height: 100%;
+}
+
+.weather-conditions {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding-left: 25px;
+  justify-content: center;
+}
+
+.weather-icon {
+  width: 50%;
+}
+
+.weather-icon__image {
+  height: 95%;
+}
+
+.currentTemp {
+  font-size: 5.5em;
+  line-height: 90%;
+}
+.descript {
+  font-size: 1.6em;
+  line-height: 90%;
+}
+.highLowTemp {
+  font-size: medium;
+}
+  
 .clock {
   display: flex;
   flex-direction: column;

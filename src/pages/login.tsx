@@ -23,7 +23,7 @@ export const Login = () => {
 
   return (
     <div className="container">
-      <div className="login">
+      <div className="login widget">
         <div>Login / Create Account</div>
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email"/>
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password"/>
