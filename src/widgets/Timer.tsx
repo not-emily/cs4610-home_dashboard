@@ -5,18 +5,36 @@ export const Timer = () => {
     const [hours, setHours] = useState(0)
     const [min, setMin] = useState(0)
     const [sec, setSec] = useState(0)
+    const [totalTime, setTotalTime] = useState(0)
+    //const [interv, setInterv] = useState()
 
+    //let timer = null
     const startTimer = () => {
-        console.log('start click')
-        const timer = setInterval(() => {
-            const totalTime = strToSec(countDownTime)
+        console.log('start click', 'time is:', countDownTime)
+        let timer = setInterval(() => {
+            setTotalTime(strToSec(countDownTime))
+            //clearInterval(timer)
         }, 1000)
+        clearInterval(timer)
     }
+    // const stopTimer = () => {
+    //     clearInterval(timer)
+    // }
 
-    const strToSec = (time: string) => {
+    const strToSec = (time: string): number => {
+        let total = 0
+        console.log('turning time to sec')
         if(time !== ""){
-            time.split(":")[0]
+            setHours(Number(time.split(":")[0]))
+            setMin(Number(time.split(":")[1]))
+            setSec(Number(time.split(":")[2]))
+            total = (hours * 3600) + (min * 60) + sec
+            console.log(hours, min, sec, '=', total)
         }
+        else{
+            console.log('no time')
+        }
+        return total
     }
 
     return (
