@@ -2,6 +2,7 @@ import { MdSettings } from "react-icons/md"
 import { GroceryList } from "../widgets/GroceryList"
 import { PetFeedingTracker } from "../widgets/PetFeedingTracker"
 import { Weather } from "../widgets/Weather"
+import { Timer } from "../widgets/Timer"
 import { TodoList } from "../widgets/TodoList"
 import { useState } from "react"
 import { Sidebar } from "../components/Sidebar"
@@ -37,7 +38,7 @@ export const Dashboard = () => {
                     <PetFeedingTracker />
                 </div>
                 <div className="widget widget__md">
-                    <div className="widget__title">Hello from Dashboard3</div>
+                    <Timer />
                 </div>
             </div>
             <div className="settings">
