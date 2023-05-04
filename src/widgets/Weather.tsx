@@ -12,7 +12,11 @@ export const Weather = () => {
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(locSuccessCallback, locErrorCallback)
-    }, [])
+    })
+
+    useEffect(() => {
+        getWeather(lon, lat)
+    }, [lat, lon])
 
     const getWeather = (lon: number, lat: number) => {
         //var key = '{yourkey}';
@@ -40,11 +44,12 @@ export const Weather = () => {
         return Math.round(((parseFloat(kelv)-273.15)*1.8)+32)
     }
      
-    const locSuccessCallback = (position: GeolocationPosition) => {
+    function locSuccessCallback (position: GeolocationPosition) {
+        console.log('position is:' )
         console.log(position)
         setLon(position.coords.longitude)
         setLat(position.coords.latitude)
-        getWeather(lon, lat)
+        console.log(lon, lat)
     }
     const locErrorCallback = (error: GeolocationPositionError) => {
         console.error(error)
