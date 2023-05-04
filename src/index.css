@@ -448,3 +448,15 @@ input[type="checkbox"] {
   align-items: center;
   font-size: 2em;
 }
+.timeButtons {
+  display: flex;
+  justify-content: center;
+}
+.timerButton {
+  margin-top: 5px;
+  margin-right: 5px;
+}
+.timeInput {
+  display: flex;
+  height: 50px;
+}
