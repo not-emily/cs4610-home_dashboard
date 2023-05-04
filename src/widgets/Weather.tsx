@@ -8,6 +8,7 @@ export const Weather = () => {
     const [currentTemp, setCurrentTemp] = useState(0)
     const [highTemp, setHighTemp] = useState(0)
     const [lowTemp, setLowTemp] = useState(0)
+    const [icon, setIcon] = useState("")
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(locSuccessCallback, locErrorCallback)
@@ -33,6 +34,7 @@ export const Weather = () => {
         setHighTemp(toFarenheit(data.main.temp_max))
         setLowTemp(toFarenheit(data.main.temp_min))
         setDescript(data.weather[0].description)
+        setIcon(data.weather[0].icon)
     }
     const toFarenheit = (kelv: string): number => {
         return Math.round(((parseFloat(kelv)-273.15)*1.8)+32)
@@ -53,14 +55,19 @@ export const Weather = () => {
         <> 
         {
             (lon == 0 && lat == 0) ? <div className='widget__content'> Loading Weather </div> : 
-            <div className="widget__content">
-                <div className="currentTemp">
-                    {currentTemp}&deg;
+            <div className="widget__content weather">
+                <div className="weather-conditions">
+                    <div className="currentTemp">
+                        {currentTemp}&deg;
+                    </div>
+                    <div className="descript">{descript}</div>
+                    <br></br>
+                    <div className="highLowTemp">High: {highTemp}&deg; 
+                    Low: {lowTemp}&deg;</div>
                 </div>
-                <div className="descript">{descript}</div>
-                <br></br>
-                <div className="highLowTemp">High: {highTemp}&deg; 
-                Low: {lowTemp}&deg;</div>
+                <div className="weather-icon">
+                    <img className="weather-icon__image" src={`https://openweathermap.org/img/wn/${icon}@2x.png`}/>
+                </div>
             </div>
         }
         </>
